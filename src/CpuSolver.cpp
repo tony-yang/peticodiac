@@ -1,13 +1,13 @@
 #include <cmath>
 #include <cstring>
 #include "AbstractSolver.h"
-#include <omp.h>
+//#include <omp.h>
 
 namespace solver {
 
 void CpuEagerSolver::update_assignment() {
     incr_step_count();
-#pragma omp parallel for
+//#pragma omp parallel for
     for (int i = 0; i < nrows_; ++i) {
       float accum = 0.0f;
       for (int j = 0; j < ncols_; ++j) {
@@ -120,7 +120,7 @@ float CpuSolver::compute_assignment(const int idx) const {
   const int rowIdx = var_to_tableau_[idx];
   const float* const row = &tableau_[rowIdx * ncols_];
   float val = 0.0f;
-#pragma omp parallel for
+//#pragma omp parallel for
   for (int i = 0; i < ncols_; ++i) {
     val += row[i] * assigns_[col_to_var_[i]];
   }
@@ -230,7 +230,7 @@ void CpuSolver::swap(const int row, const int col, const int basic_idx,
 
 void CpuSolver::pivot_update_inner(const float alpha, const int row,
                                    const int col) {
-#pragma omp parallel for
+//#pragma omp parallel for
   for (int i = 0; i < nrows_; ++i) {
     if (i == row)
       continue;
@@ -249,7 +249,7 @@ void CpuSolver::pivot_update_inner(const float alpha, const int row,
 
 void CpuSolver::pivot_update_row(const float alpha, const int row) {
   float* beta = &tableau_[row * ncols_];
-#pragma omp parallel for
+//#pragma omp parallel for
   for (int i = 0; i < ncols_; ++i) {
     *beta = -(*beta) / alpha;
     beta++;
@@ -258,7 +258,7 @@ void CpuSolver::pivot_update_row(const float alpha, const int row) {
 
 void CpuSolver::pivot_update_column(const float alpha, const int col) {
   float* gamma = &tableau_[col];
-#pragma omp parallel for
+//#pragma omp parallel for
   for (int i = 0; i < nrows_; ++i) {
     *gamma /= alpha;
     gamma += ncols_;
