@@ -2,7 +2,7 @@
 #include <fstream>
 #include <cstdio>
 #include <cmath>
-#include <omp.h>
+//#include <omp.h>
 #include <string.h>
 
 #include "AbstractSolver.h"
