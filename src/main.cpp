@@ -152,6 +152,7 @@ void start_solver_test_float(const SolverType type, const int num_var, const int
   solver->set_bounds(3, low2, upp2);
 
   execute<T>(solver);
+  solver->generate_guided_peticodiac_input();
   delete solver;
 }
 
@@ -223,6 +224,7 @@ void start_float_solver(const SolverType type, char const *input_file) {
           #endif
 
           execute<T>(solver);
+          solver->generate_guided_peticodiac_input();
           delete solver;
           solver = nullptr;
         }

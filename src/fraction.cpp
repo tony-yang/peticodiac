@@ -124,6 +124,13 @@ void Fraction::reduce(Fraction& fraction) const {
   fraction.denominator = fraction.denominator / gcd;
 }
 
+Fraction floor(const Fraction& operand) {
+  return operand;
+}
+Fraction ceil(const Fraction& operand) {
+  return operand;
+}
+
 long long int Fraction::gcd(long long int num1, long long int num2) const {
   num1 = abs(num1);
   num2 = abs(num2);

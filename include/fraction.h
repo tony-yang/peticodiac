@@ -2,6 +2,7 @@
 #define FRACTION_H_
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 namespace solver {
@@ -28,6 +29,8 @@ namespace solver {
     bool operator==(const Fraction& operand) const;
     bool operator==(const long long int operand) const;
     void reduce(Fraction& fraction) const;
+    friend Fraction floor(const Fraction& operand);
+    friend Fraction ceil(const Fraction& operand);
 
   private:
     long long int numerator;

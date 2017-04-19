@@ -20,6 +20,7 @@ namespace solver {
     virtual void print_tableau() const override;
     virtual void print_variables() const override;
     virtual bool verify_solution() const override;
+    virtual void generate_guided_peticodiac_input() const override;
     virtual inline int num_problem_vars() const override {
       return ncols_;
     }

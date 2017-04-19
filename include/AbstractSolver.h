@@ -51,6 +51,7 @@ namespace solver {
     virtual void print_variables() const = 0;
     virtual int get_step_count() const = 0;
     virtual bool verify_solution() const = 0;
+    virtual void generate_guided_peticodiac_input() const = 0;
 
    protected:
     virtual bool check_bounds(int &broken_idx) = 0;

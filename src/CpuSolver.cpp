@@ -1,5 +1,6 @@
 #include "CpuSolver.h"
 #include <typeinfo>
+#include <math.h>
 
 namespace solver {
 template <typename T>
@@ -173,6 +174,66 @@ bool CpuSolver<T>::verify_solution() const {
   }
 
   return true;
+}
+
+template <typename T>
+void CpuSolver<T>::generate_guided_peticodiac_input() const {
+  std::cout << "\n#### Generate Guided SMT2 for exact solver ####" << std::endl;
+  std::cout << "p cnf " << ncols_ << " " << verify_basic_.size() + ncols_ << std::endl;
+
+  T max_error_size = 0;
+  int row_index = 0;
+  for (auto& i: verify_basic_) {
+    std::cout << "c";
+    T actual_result = 0;
+    for (int j = 0; j < ncols_; ++j) {
+      std::cout << " " << verify_tableau_[row_index * ncols_ + j];
+      actual_result += verify_tableau_[row_index * ncols_ + j] * assigns_[j];
+    }
+
+    T lower_bound_error_size = actual_result - verify_lower_[i];
+    if (lower_bound_error_size < 0) {
+      lower_bound_error_size = -lower_bound_error_size;
+    }
+    T upper_bound_error_size = actual_result - verify_upper_[i];
+    if (upper_bound_error_size < 0) {
+      upper_bound_error_size = -upper_bound_error_size;
+    }
+
+    if (lower_bound_error_size < upper_bound_error_size) {
+      if (max_error_size < lower_bound_error_size) {
+        max_error_size = lower_bound_error_size;
+      }
+    } else {
+      if (max_error_size < upper_bound_error_size) {
+        max_error_size = upper_bound_error_size;
+      }
+    }
+
+    std::cout << std::endl;
+    std::cout << "b ";
+    std::cout << ncols_ + row_index << " >=:" << verify_lower_[i] << " <=:" << verify_upper_[i] << std::endl;
+    row_index++;
+  }
+
+  // Add the solution guidance expression
+  for (int k = 0; k < ncols_; ++k) {
+    std::cout << "c";
+    for (int l = 0; l < k; ++l) {
+      std::cout << " 0";
+    }
+    std::cout << " 1";
+    for (int l = 0; l < ncols_ - k - 1; ++l) {
+      std::cout << " 0";
+    }
+    std::cout << std::endl;
+
+    std::cout << "b ";
+    std::cout << ncols_ + row_index << " >=:" << floor(assigns_[k] - max_error_size) << " <=:" << ceil(assigns_[k] + max_error_size) << std::endl;
+    row_index++;
+  }
+
+  std::cout << "eoa" << std::endl;
 }
 
 template <typename T>
