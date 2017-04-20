@@ -190,27 +190,29 @@ void CpuSolver<T>::generate_guided_peticodiac_input() const {
       std::cout << " " << verify_tableau_[row_index * ncols_ + j];
       actual_result += verify_tableau_[row_index * ncols_ + j] * assigns_[j];
     }
-
-    T lower_bound_error_size = actual_result - verify_lower_[i];
-    if (lower_bound_error_size < 0) {
-      lower_bound_error_size = -lower_bound_error_size;
-    }
-    T upper_bound_error_size = actual_result - verify_upper_[i];
-    if (upper_bound_error_size < 0) {
-      upper_bound_error_size = -upper_bound_error_size;
-    }
-
-    if (lower_bound_error_size < upper_bound_error_size) {
-      if (max_error_size < lower_bound_error_size) {
-        max_error_size = lower_bound_error_size;
-      }
-    } else {
-      if (max_error_size < upper_bound_error_size) {
-        max_error_size = upper_bound_error_size;
-      }
-    }
-
     std::cout << std::endl;
+
+    if (verify_lower_[i] >= 0 && verify_upper_[i] >= 0) {
+      T lower_bound_error_size = actual_result - verify_lower_[i];
+      if (lower_bound_error_size < 0) {
+        lower_bound_error_size = -lower_bound_error_size;
+      }
+      T upper_bound_error_size = actual_result - verify_upper_[i];
+      if (upper_bound_error_size < 0) {
+        upper_bound_error_size = -upper_bound_error_size;
+      }
+
+      if (lower_bound_error_size < upper_bound_error_size) {
+        if (max_error_size < lower_bound_error_size) {
+          max_error_size = lower_bound_error_size;
+        }
+      } else {
+        if (max_error_size < upper_bound_error_size) {
+          max_error_size = upper_bound_error_size;
+        }
+      }
+    }
+
     std::cout << "b ";
     std::cout << ncols_ + row_index << " >=:" << verify_lower_[i] << " <=:" << verify_upper_[i] << std::endl;
     row_index++;
@@ -229,7 +231,15 @@ void CpuSolver<T>::generate_guided_peticodiac_input() const {
     std::cout << std::endl;
 
     std::cout << "b ";
-    std::cout << ncols_ + row_index << " >=:" << floor(assigns_[k] - max_error_size) << " <=:" << ceil(assigns_[k] + max_error_size) << std::endl;
+    T guided_lower_bound = floor(assigns_[k] - max_error_size);
+    if (guided_lower_bound <= -1) {
+      guided_lower_bound = -1;
+    }
+    T guided_upper_bound = ceil(assigns_[k] + max_error_size) + 0;
+    if (guided_upper_bound <= -1) {
+      guided_upper_bound = -1;
+    }
+    std::cout << ncols_ + row_index << " >=:" << guided_lower_bound << " <=:" << guided_upper_bound << std::endl;
     row_index++;
   }
 

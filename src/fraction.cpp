@@ -127,6 +127,7 @@ void Fraction::reduce(Fraction& fraction) const {
 Fraction floor(const Fraction& operand) {
   return operand;
 }
+
 Fraction ceil(const Fraction& operand) {
   return operand;
 }
