@@ -232,13 +232,7 @@ void CpuSolver<T>::generate_guided_peticodiac_input() const {
 
     std::cout << "b ";
     T guided_lower_bound = floor(assigns_[k] - max_error_size);
-    if (guided_lower_bound <= -1) {
-      guided_lower_bound = -1;
-    }
     T guided_upper_bound = ceil(assigns_[k] + max_error_size) + 0;
-    if (guided_upper_bound <= -1) {
-      guided_upper_bound = -1;
-    }
     std::cout << ncols_ + row_index << " >=:" << guided_lower_bound << " <=:" << guided_upper_bound << std::endl;
     row_index++;
   }
